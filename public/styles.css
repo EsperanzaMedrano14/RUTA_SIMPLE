@@ -1,0 +1,94 @@
+/*UTILIZAREMOS LOS SIGUIENTES COLORES
+AMARLLO BRILLANTE: #FFC700
+AMARILLO ORO: #FFA000
+MAIN ORANGE: #E85D00
+DEEP ORANGE: #D24200
+DEEPEST DARK ORANGE: #C43000*/
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background-color: #faf7f7;
+    text-align: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+h1 {
+    color: #E85D00;
+    margin-top: 50px;
+    text-align:center;
+    font-size: 40px;
+}
+
+form {
+    background-color: #FFC700;
+    width: 400px;
+    padding: 30px;
+    margin: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border-radius: 4px;
+    text-align: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    box-shadow: 0px 0px 10px #f4a824;
+}
+
+.FormRuta {
+    width: 70%;
+}
+
+.datos {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #FFA000;
+    border-radius: 4px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 16px;
+}
+
+.registro {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #FFA000;
+    border-radius: 4px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 16px;
+}
+
+.inicio {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #FFA000;
+    border-radius: 4px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 16px;
+}
+
+.mensaje {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #FFA000;
+    border-radius: 4px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 16px;
+}
+
+button {
+    width:50%;
+    padding: 12px;
+    border: none;
+    background:#FFA000;
+    color: white;
+    margin: 16px 0;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+img {
+    width: 700px;
+    height: auto;
+}
