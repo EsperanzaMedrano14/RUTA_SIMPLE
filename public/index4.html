@@ -1,0 +1,132 @@
+<!--ACÁ SE VE EL MAPA DE leaflet.js, CON LAS FUNCIONES DE MODIFICAR, DE ELIMINAR Y DE AGREGAR PUNTOS DE INTERÉS. TAMBIÉN SE PUEDE AGREGAR NOTAS POR PARADA-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>RUTA SIMPLE MAPA</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+        <style>
+            #map { height: 500px; width: 90%; margin: 20px auto; border-radius: 8px; }
+            #panelEstado { margin: 20px auto; }
+            #panelEstado button { width: auto; padding: 10px 20px; margin: 0 8px; }
+        </style>
+    </head>
+
+    <body>
+        <h1>Mapa interactivo</h1>
+        <p id="infoRuta"></p>
+
+        <div id="panelEstado">
+            <button id="btnEnViaje">Marcar "En viaje"</button>
+            <button id="btnCompletado">Marcar "Completado"</button>
+        </div>
+
+        <p id="mensajeError" style="color: #D24200; display: none;"></p>
+
+        <div id="map"></div>
+
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <script>
+            // Guardia de sesión
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'index1.html';
+            }
+
+            const parametros = new URLSearchParams(window.location.search);
+            const hoja_ruta_id = parametros.get('id');
+            const infoRuta = document.getElementById('infoRuta');
+            const mensajeError = document.getElementById('mensajeError');
+
+            if (!hoja_ruta_id) {
+                mensajeError.textContent = 'No se especificó qué hoja de ruta mostrar.';
+                mensajeError.style.display = 'block';
+            }
+
+            let mapa;
+
+            async function cargarRuta() {
+                try {
+                    const respuesta = await fetch(`/api/rutas/${hoja_ruta_id}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    if (respuesta.status === 401 || respuesta.status === 403) {
+                        localStorage.removeItem('token');
+                        window.location.href = 'index1.html';
+                        return;
+                    }
+
+                    const datos = await respuesta.json();
+
+                    if (!respuesta.ok) {
+                        mensajeError.textContent = datos.error || 'No se pudo cargar la ruta';
+                        mensajeError.style.display = 'block';
+                        return;
+                    }
+
+                    infoRuta.textContent = `Fecha: ${datos.fecha} — Estado: ${datos.nombre_estado}`;
+
+                    mapa = L.map('map').setView([datos.origen_latitud, datos.origen_longitud], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; OpenStreetMap contributors'
+                    }).addTo(mapa);
+
+                    const puntos = [[datos.origen_latitud, datos.origen_longitud]];
+
+                    L.marker([datos.origen_latitud, datos.origen_longitud])
+                        .addTo(mapa)
+                        .bindPopup(`<b>Origen</b><br>${datos.origen_direccion}`);
+
+                    datos.paradas.forEach((parada) => {
+                        puntos.push([parada.destino_latitud, parada.destino_longitud]);
+                        L.marker([parada.destino_latitud, parada.destino_longitud])
+                            .addTo(mapa)
+                            .bindPopup(`<b>Parada ${parada.orden_visita}</b><br>${parada.destino_direccion}<br>Estado: ${parada.estado_parada}`);
+                    });
+
+                    L.polyline(puntos, { color: '#E85D00', weight: 4 }).addTo(mapa);
+                    mapa.fitBounds(puntos);
+
+                } catch (error) {
+                    console.error('Error al cargar la ruta:', error);
+                    mensajeError.textContent = 'No se pudo conectar con el servidor.';
+                    mensajeError.style.display = 'block';
+                }
+            }
+
+            async function cambiarEstado(estado_id) {
+                try {
+                    const respuesta = await fetch(`/api/rutas/${hoja_ruta_id}/estado`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ estado_id })
+                    });
+
+                    const datos = await respuesta.json();
+
+                    if (!respuesta.ok) {
+                        mensajeError.textContent = datos.error || 'No se pudo actualizar el estado';
+                        mensajeError.style.display = 'block';
+                        return;
+                    }
+
+                    mensajeError.style.display = 'none';
+                    cargarRuta(); // refresca el texto de estado en pantalla
+                } catch (error) {
+                    console.error('Error al actualizar el estado:', error);
+                }
+            }
+
+            document.getElementById('btnEnViaje').addEventListener('click', () => cambiarEstado(1));
+            document.getElementById('btnCompletado').addEventListener('click', () => cambiarEstado(2));
+
+            if (hoja_ruta_id) cargarRuta();
+        </script>
+    </body>
+</html>

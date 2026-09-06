@@ -1,0 +1,85 @@
+<!--LOGIN O REGISTRO DE USUARIO, ESTO A TRAVÉS DE UNA LÓGICA DE REGISTRO DEL BACKEND-->
+<!--LOGIN O REGISTRO DE USUARIO, ESTO A TRAVÉS DE UNA LÓGICA DE REGISTRO DEL BACKEND
+
+<!DOCTYPE html>
+<html> 
+    <head> 
+        <meta charset="UTF-8">
+        <title>RUTA SIMPLE LOGIN</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="icon" type="image/x-icon" href="recursos_visuales/RUTA_SIMPLE_LOGO-Photoroom.png">
+    </head>
+    <body> 
+        <h1>Inicio de sesión</h1>
+        <form action="index2.html">
+            <input class="inicio" type="email" placeholder="Correo electrónico" required>
+            <input class= "inicio" type="password" placeholder="Contraseña" required>
+            <button type="submit">Iniciar sesión</button>
+        </form>
+
+        <p>¿No tienes una cuenta? <a href="index3.html">Regístrate aquí</a></p>
+    </body>
+</html-->
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>RUTA SIMPLE LOGIN</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="icon" type="image/x-icon" href="recursos_visuales/RUTA_SIMPLE_LOGO-Photoroom.png">
+    </head>
+    <body>
+        <h1>Inicio de sesión</h1>
+        <form id="formLogin">
+            <input class="inicio" type="email" id="email_usuario" placeholder="Correo electrónico" required>
+            <input class="inicio" type="password" id="contrasena" placeholder="Contraseña" required>
+            <p id="mensajeError" style="color: #D24200; display: none;"></p>
+            <button type="submit">Iniciar sesión</button>
+        </form>
+
+        <p>¿No tienes una cuenta? <a href="index3.html">Regístrate aquí</a></p>
+
+        <script>
+            const formLogin = document.getElementById('formLogin');
+            const mensajeError = document.getElementById('mensajeError');
+
+            formLogin.addEventListener('submit', async (evento) => {
+                evento.preventDefault(); // evita que el navegador navegue solo
+
+                const email_usuario = document.getElementById('email_usuario').value;
+                const contrasena = document.getElementById('contrasena').value;
+
+                mensajeError.style.display = 'none';
+
+                try {
+                    const respuesta = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email_usuario, contrasena })
+                    });
+
+                    const datos = await respuesta.json();
+
+                    if (!respuesta.ok) {
+                        mensajeError.textContent = datos.error || 'No se pudo iniciar sesión';
+                        mensajeError.style.display = 'block';
+                        return;
+                    }
+
+                    // Guardamos el token y los datos básicos del usuario para usarlos en las próximas páginas
+                    localStorage.setItem('token', datos.token);
+                    localStorage.setItem('usuario', JSON.stringify(datos.usuario));
+
+                    window.location.href = 'index2.html';
+
+                } catch (error) {
+                    console.error('Error al iniciar sesión:', error);
+                    mensajeError.textContent = 'No se pudo conectar con el servidor. Intentá de nuevo.';
+                    mensajeError.style.display = 'block';
+                }
+            });
+        </script>
+    </body>
+</html>

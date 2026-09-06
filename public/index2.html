@@ -1,0 +1,139 @@
+<!--DESPUÉS DE PASAR EL LOGIN EL USUARIO REGISTRA SU RUTA, ACÁ SE GUARDAN LOS ADTOS EN LA BASE DE DATOS Y SE APLICA LA LÓGICA DE CERCANÍA EN EL BACKEND-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>RUTA SIMPLE DATOS DE VIAJE</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+        <style>
+            .filaParada {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 10px;
+            }
+            .filaParada .datos { flex: 1; }
+            .botonQuitar {
+                width: auto;
+                padding: 10px 14px;
+                margin: 0;
+                background: #D24200;
+            }
+            #botonAgregarParada {
+                width: 100%;
+                background: #FFA000;
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <section class="DatosViaje">
+            <h1>¡Ingresá los datos de tu viaje!</h1>
+            <form class="FormRuta" id="formRuta">
+                <label for="origen">Origen: </label>
+                <input class="datos" placeholder="Calle San Martín, Córdoba" type="text" id="origen" name="origen" required>
+
+                <br><br>
+                <label>Paradas intermedias (opcional):</label>
+                <div id="listaParadas"></div>
+                <button type="button" id="botonAgregarParada">+ Agregar parada</button>
+
+                <label for="destino">Destino: </label>
+                <input class="datos" placeholder="Calle San Juan 123, Córdoba" type="text" id="destino" name="destino" required>
+
+                <p id="mensajeError" style="color: #D24200; display: none;"></p>
+                <button type="submit" id="botonOptimizar">Optimizar Ruta</button>
+            </form>
+        </section>
+
+        <script>
+            // Guardia de sesión: sin token no se puede crear una ruta
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'index1.html';
+            }
+
+            const listaParadas = document.getElementById('listaParadas');
+            const botonAgregarParada = document.getElementById('botonAgregarParada');
+            const formRuta = document.getElementById('formRuta');
+            const mensajeError = document.getElementById('mensajeError');
+            const botonOptimizar = document.getElementById('botonOptimizar');
+
+            function agregarFilaParada() {
+                const fila = document.createElement('div');
+                fila.className = 'filaParada';
+                fila.innerHTML = `
+                    <input class="datos" type="text" placeholder="Dirección de la parada">
+                    <button type="button" class="botonQuitar">Quitar</button>
+                `;
+                fila.querySelector('.botonQuitar').addEventListener('click', () => fila.remove());
+                listaParadas.appendChild(fila);
+            }
+
+            botonAgregarParada.addEventListener('click', agregarFilaParada);
+
+            formRuta.addEventListener('submit', async (evento) => {
+                evento.preventDefault();
+
+                const origen_direccion = document.getElementById('origen').value;
+                const destino_direccion = document.getElementById('destino').value;
+
+                // Recorremos todas las filas de paradas que el usuario haya agregado (cantidad variable)
+                const paradas = Array.from(listaParadas.querySelectorAll('input'))
+                    .map(input => input.value.trim())
+                    .filter(valor => valor.length > 0)
+                    .map(valor => ({ destino_direccion: valor }));
+
+                // El destino final también es un punto a visitar más
+                const destinos = [...paradas, { destino_direccion }];
+
+                // La fecha del viaje es la de hoy (no se le pide al usuario en este formulario)
+                const fecha = new Date().toISOString().slice(0, 10);
+
+                mensajeError.style.display = 'none';
+                botonOptimizar.disabled = true;
+                botonOptimizar.textContent = 'Optimizando...';
+
+                try {
+                    const respuesta = await fetch('/api/rutas', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ fecha, origen_direccion, destinos })
+                    });
+
+                    const datos = await respuesta.json();
+
+                    if (respuesta.status === 401 || respuesta.status === 403) {
+                        localStorage.removeItem('token');
+                        window.location.href = 'index1.html';
+                        return;
+                    }
+
+                    if (!respuesta.ok) {
+                        mensajeError.textContent = datos.error || 'No se pudo optimizar la ruta';
+                        mensajeError.style.display = 'block';
+                        return;
+                    }
+
+                    // Ruta creada y optimizada: vamos al mapa con el id de esta hoja de ruta
+                    window.location.href = `index4.html?id=${datos.hoja_ruta_id}`;
+
+                } catch (error) {
+                    console.error('Error al crear la ruta:', error);
+                    mensajeError.textContent = 'No se pudo conectar con el servidor. Intentá de nuevo.';
+                    mensajeError.style.display = 'block';
+                } finally {
+                    botonOptimizar.disabled = false;
+                    botonOptimizar.textContent = 'Optimizar Ruta';
+                }
+            });
+
+            // Arrancamos con una fila de parada vacía para no dejar el formulario vacío del todo
+            agregarFilaParada();
+        </script>
+    </body>
+</html>

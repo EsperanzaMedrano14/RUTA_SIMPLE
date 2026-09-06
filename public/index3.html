@@ -1,0 +1,62 @@
+<!--ACÁ SE REGISTRAN LOS USUARIOS NUEVOS, SE DEBEN GUARDAR EN LA BASE DE DATOS-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>RUTA SIMPLE REGISTRO</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+
+    <body>
+        <h1>Registro de usuario</h1>
+        <form id="formRegistro">
+            <input class="registro" type="text" id="nombre_usuario" placeholder="Nombre completo" required>
+            <input class="registro" type="email" id="email_usuario" placeholder="Correo electrónico" required>
+            <input class="registro" type="password" id="contrasena" placeholder="Contraseña" required>
+            <p id="mensajeError" style="color: #D24200; display: none;"></p>
+            <button type="submit">Registrarse</button>
+        </form>
+
+        <p>¿Ya tienes una cuenta? <a href="index1.html">Inicia sesión aquí</a></p>
+
+        <script>
+            const formRegistro = document.getElementById('formRegistro');
+            const mensajeError = document.getElementById('mensajeError');
+
+            formRegistro.addEventListener('submit', async (evento) => {
+                evento.preventDefault();
+
+                const nombre_usuario = document.getElementById('nombre_usuario').value;
+                const email_usuario = document.getElementById('email_usuario').value;
+                const contrasena = document.getElementById('contrasena').value;
+
+                mensajeError.style.display = 'none';
+
+                try {
+                    const respuesta = await fetch('/api/auth/registro', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nombre_usuario, email_usuario, contrasena })
+                    });
+
+                    const datos = await respuesta.json();
+
+                    if (!respuesta.ok) {
+                        mensajeError.textContent = datos.error || 'No se pudo completar el registro';
+                        mensajeError.style.display = 'block';
+                        return;
+                    }
+
+                    // Registro exitoso: mandamos al usuario a iniciar sesión con su cuenta nueva
+                    window.location.href = 'index1.html';
+
+                } catch (error) {
+                    console.error('Error al registrarse:', error);
+                    mensajeError.textContent = 'No se pudo conectar con el servidor. Intentá de nuevo.';
+                    mensajeError.style.display = 'block';
+                }
+            });
+        </script>
+    </body>
+</html>

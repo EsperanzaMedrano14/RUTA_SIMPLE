@@ -1,0 +1,79 @@
+<!--ACÁ SE MUESTRA EL HISTORIAL DE NAVEGACIÓN -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>RUTA SIMPLE HISTORIAL</title>
+        <link rel="stylesheet" href="styles.css">
+        <style>
+            #listaHistorial { width: 80%; margin: 20px auto; text-align: left; }
+            .itemHistorial {
+                background-color: #FFC700;
+                border-radius: 8px;
+                padding: 16px;
+                margin-bottom: 12px;
+                cursor: pointer;
+            }
+            .itemHistorial:hover { box-shadow: 0px 0px 10px #f4a824; }
+        </style>
+    </head>
+
+    <body>
+        <h1>Historial de hojas de ruta</h1>
+        <p id="mensajeError" style="color: #D24200; display: none;"></p>
+        <div id="listaHistorial"></div>
+
+        <script>
+            // Guardia de sesión
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'index1.html';
+            }
+
+            const listaHistorial = document.getElementById('listaHistorial');
+            const mensajeError = document.getElementById('mensajeError');
+
+            async function cargarHistorial() {
+                try {
+                    const respuesta = await fetch('/api/rutas', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    if (respuesta.status === 401 || respuesta.status === 403) {
+                        localStorage.removeItem('token');
+                        window.location.href = 'index1.html';
+                        return;
+                    }
+
+                    const hojas = await respuesta.json();
+
+                    if (!respuesta.ok) {
+                        mensajeError.textContent = hojas.error || 'No se pudo cargar el historial';
+                        mensajeError.style.display = 'block';
+                        return;
+                    }
+
+                    if (hojas.length === 0) {
+                        listaHistorial.innerHTML = '<p>Todavía no creaste ninguna hoja de ruta.</p>';
+                        return;
+                    }
+
+                    listaHistorial.innerHTML = hojas.map(hoja => `
+                        <div class="itemHistorial" onclick="window.location.href='index4.html?id=${hoja.hoja_ruta_id}'">
+                            <b>${hoja.fecha}</b> — ${hoja.origen_direccion}
+                            <br>Estado: ${hoja.nombre_estado}
+                        </div>
+                    `).join('');
+
+                } catch (error) {
+                    console.error('Error al cargar el historial:', error);
+                    mensajeError.textContent = 'No se pudo conectar con el servidor.';
+                    mensajeError.style.display = 'block';
+                }
+            }
+
+            cargarHistorial();
+        </script>
+    </body>
+</html>
