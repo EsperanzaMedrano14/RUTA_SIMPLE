@@ -1,0 +1,32 @@
+<!--ACÁ SE VE EL MAPA DE leaflet.js, CON LAS FUNCIONES DE MODIFICAR, DE ELIMINAR Y DE AGREGAR PUNTOS DE INTERÉS. TAMBIÉN SE PUEDE AGREGAR NOTAS POR PARADA-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>RUTA SIMPLE MAPA</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+
+    </head>
+
+    <body>
+        <h1>Mapa interactivo</h1>
+        <p id="infoRuta"></p>
+
+        <div id="panelEstado">
+            <button id="btnEnViaje">Marcar "En viaje"</button>
+            <button id="btnCompletado">Marcar "Completado"</button>
+        </div>
+
+        <p id="mensajeError" style="color: #D24200; display: none;"></p>
+
+        <div id="map"></div>
+
+        <!-- Leaflet es una librería externa, tiene que cargar antes que App.js--> 
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <script src="App.js" defer></script>
+
+        <a href="index5.html">Ver historial</a>
+    </body>
+</html>

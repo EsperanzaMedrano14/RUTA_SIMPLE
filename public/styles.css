@@ -1,0 +1,202 @@
+/*UTILIZAREMOS LOS SIGUIENTES COLORES
+AMARLLO BRILLANTE: #FFC700
+AMARILLO ORO: #FFA000
+MAIN ORANGE: #E85D00
+DEEP ORANGE: #D24200
+DEEPEST DARK ORANGE: #C43000*/
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background-color: #faf7f7;
+    text-align: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+h1 {
+    color: #E85D00;
+    margin-top: 50px;
+    text-align:center;
+    font-size: 40px;
+}
+
+form {
+    background-color: #FFC700;
+    width: 400px;
+    padding: 30px;
+    margin: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border-radius: 4px;
+    text-align: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    box-shadow: 0px 0px 10px #f4a824;
+}
+
+.FormRuta {
+    width: 70%;
+}
+
+.datos {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #FFA000;
+    border-radius: 4px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 16px;
+}
+
+.registro {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #FFA000;
+    border-radius: 4px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 16px;
+}
+
+.inicio {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #FFA000;
+    border-radius: 4px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 16px;
+}
+
+.mensaje {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #FFA000;
+    border-radius: 4px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 16px;
+}
+
+button {
+    width:50%;
+    padding: 12px;
+    border: none;
+    background:#FFA000;
+    color: white;
+    margin: 16px 0;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+img {
+    width: 700px;
+    height: auto;
+}
+
+.filaParada {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+            
+.filaParada .datos { 
+    flex: 1; 
+}
+            
+.botonQuitar {
+    width: auto;
+    padding: 10px 14px;
+    margin: 0;
+    background: #D24200;
+}
+           
+#botonAgregarParada {
+    width: 100%;
+    background: #FFA000;
+    margin-bottom: 20px;
+}
+
+#map { 
+    height: 500px; 
+    width: 90%; 
+    margin: 20px auto; 
+    border-radius: 8px; 
+}
+            
+#panelEstado { 
+    margin: 20px auto; 
+}
+            
+#panelEstado button { 
+    width: auto; 
+    padding: 10px 20px; 
+    margin: 0 8px; 
+}
+
+#listaHistorial { 
+    width: 80%; 
+    margin: 20px auto; 
+    text-align: left; 
+}
+            
+.itemHistorial {
+    background-color: #FFC700;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+            
+.itemHistorial:hover { 
+    box-shadow: 0px 0px 10px #f4a824; 
+}
+
+select.datos, select.tipoMovimiento {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #FFA000;
+    border-radius: 4px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 16px;
+}
+
+.filaParada {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.filaParada .datos { 
+    flex: 2; 
+}
+
+.filaParada .tipoMovimiento { 
+    flex: 1; 
+}
+
+.botonQuitar {
+    width: auto;
+    padding: 10px 14px;
+    margin: 0;
+    background: #D24200;
+}
+
+#botonAgregarParada {
+    width: 100%;
+    background: #FFA000;
+    margin-bottom: 20px;
+}
+            
+.filaDestino {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+            
+.filaDestino .datos { 
+    flex: 2; 
+}
+            
+.filaDestino .tipoMovimiento { 
+    flex: 1; 
+}
